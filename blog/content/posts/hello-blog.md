@@ -1,7 +1,7 @@
 ---
 title: 开个博客，记一点自己的生活
 publishDate: 2026-11-17
-draft: true
+draft: false
 description: 很久没认真写过文字了。翻翻相册，发现生活里还有这么多想记下来的事。
 tags:
   - 日常
