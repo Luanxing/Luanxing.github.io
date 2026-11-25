@@ -14,7 +14,7 @@ export const siteConfig: SiteConfig = {
 	// Used as both a meta property (src/components/BaseHead.astro L:31 + L:49) & the generated satori png (src/pages/og-image/[slug].png.ts)
 	author: "Otto",
 	// Used as the default description meta property and webmanifest description
-	description: "Otto 的旅行、户外与生活记录。",
+	description: "一方乱行，Otto 的个人博客。记录在日本的旅行、登山、滑雪、攀岩和日常生活。",
 	// HTML lang property, found in src/layouts/Base.astro L:18 & astro.config.ts L:48
 	lang: "zh-CN",
 	// Meta property, found in src/components/BaseHead.astro L:42

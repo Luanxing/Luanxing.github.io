@@ -19,6 +19,8 @@ import {
 } from "./src/plugins/satteri";
 import { expressiveCodeOptions, siteConfig } from "./src/site.config";
 
+const hasNotes = fs.readdirSync(new URL("./content/notes/", import.meta.url), { recursive: true }).some((file) => /\.mdx?$/.test(String(file)));
+
 // https://astro.build/config
 export default defineConfig({
 	site: siteConfig.url,
@@ -28,7 +30,9 @@ export default defineConfig({
 	integrations: [
 		expressiveCode(expressiveCodeOptions),
 		icon(),
-		sitemap(),
+		sitemap({
+            filter: (page) => hasNotes || new URL(page).pathname !== "/notes/",
+        }),
 		mdx(),
 		robotsTxt(),
 		webmanifest({

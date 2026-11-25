@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import FormattedDate from "@/components/FormattedDate.astro";
+import { siteConfig } from "@/site.config";
 
 interface Props {
 	content: CollectionEntry<"post">;
@@ -34,7 +35,7 @@ const {
 </h1>
 <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
 	<p class="font-semibold">
-		<FormattedDate date={data.publishDate} /> /{" "}
+		<a class="cactus-link" rel="author" href="/about/">{siteConfig.author}</a> / <FormattedDate date={data.publishDate} /> /{" "}
 		{readingTime}
 	</p>
 	{

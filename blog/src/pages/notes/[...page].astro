@@ -21,6 +21,7 @@ interface Props {
 const { page } = Astro.props;
 
 const meta = {
+	noindex: page.data.length === 0,
 	description: "Read my collection of notes",
 	title: "Notes",
 };

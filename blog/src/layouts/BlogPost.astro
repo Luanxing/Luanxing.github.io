@@ -1,5 +1,6 @@
 ---
 import { type CollectionEntry, render } from "astro:content";
+import { getImage } from "astro:assets";
 
 import Masthead from "@/components/blog/Masthead.astro";
 import TOC from "@/components/blog/TOC.astro";
@@ -12,9 +13,10 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { ogImage, title, description, updatedDate, publishDate } = post.data;
-const socialImage = ogImage ?? `/og-image/${post.id}.png`;
-const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString();
+const { ogImage, coverImage, title, description, updatedDate, publishDate } = post.data;
+const cover = coverImage ? await getImage({ src: coverImage.src, width: 1200, format: "jpeg" }) : undefined;
+const socialImage = cover?.src ?? (ogImage === "/icon.svg" ? undefined : ogImage ?? `/og-image/${post.id}.png`);
+const articleDate = publishDate.toISOString();
 const { headings, remarkPluginFrontmatter } = await render(post);
 const readingTime: string = remarkPluginFrontmatter.readingTime;
 ---
@@ -22,6 +24,7 @@ const readingTime: string = remarkPluginFrontmatter.readingTime;
 <BaseLayout
 	meta={{
 		articleDate,
+		modifiedDate: updatedDate?.toISOString(),
 		description,
 		ogImage: socialImage,
 		title,
