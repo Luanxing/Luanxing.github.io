@@ -1,0 +1,62 @@
+media:
+  input: blog/public/images
+  output: /images
+  extensions: [jpg, jpeg, png, webp, gif, avif]
+  rename: random
+content:
+  - name: posts
+    label: 文章
+    type: collection
+    path: blog/content/posts
+    format: yaml-frontmatter
+    subfolders: false
+    filename:
+      template: "{year}-{month}-{day}-{primary}.md"
+      field: create
+    view:
+      primary: title
+      fields: [title, publishDate, draft]
+      sort: [publishDate]
+      default:
+        sort: publishDate
+        order: desc
+    fields:
+      - name: title
+        label: 标题
+        type: string
+        required: true
+        options:
+          maxlength: 60
+      - name: publishDate
+        label: 文章日期
+        type: date
+        required: true
+        options:
+          format: yyyy-MM-dd
+      - name: draft
+        label: 草稿（开启时不在博客发布）
+        type: boolean
+        default: true
+        description: 保存会提交到 GitHub。关闭草稿并保存后，文章会自动发布到博客。
+      - name: description
+        label: 摘要
+        type: text
+        required: true
+        description: 用一两句话介绍这篇文章，也会用于搜索结果。
+      - name: tags
+        label: 标签
+        type: string
+        list: true
+      - name: ogImage
+        label: 分享预览图
+        type: image
+        default: /icon.svg
+        description: 可选；用于分享链接时的预览图片。正文图片请在下方编辑器中插入。
+      - name: body
+        label: 正文
+        type: rich-text
+        options:
+          format: markdown
+          switcher: true
+          rename: random
+          extensions: [jpg, jpeg, png, webp, gif, avif]
