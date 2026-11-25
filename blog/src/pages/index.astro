@@ -1,0 +1,8 @@
+---
+import Base from '../layouts/Base.astro';
+import { posts } from '../posts.js';
+---
+<Base>
+<p>在日本生活，有空就往山里跑。</p>
+<ul class="post-list">{posts.slice(0, 8).map(post => <li>{post.frontmatter.cover && <a href={post.url}><img class="cover" src={post.frontmatter.cover} alt={post.frontmatter.coverAlt || post.frontmatter.title} /></a>}<time datetime={post.frontmatter.date}>{post.frontmatter.date}</time><h2><a href={post.url}>{post.frontmatter.title}</a></h2><p>{post.frontmatter.description}</p></li>)}</ul>
+</Base>
