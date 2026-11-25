@@ -12,7 +12,7 @@ const { headings } = Astro.props;
 const toc = generateToc(headings);
 ---
 
-<details class="mb-8">
+<details open class="post-toc mb-8">
 	<summary class="title hover:marker:text-accent cursor-pointer text-lg">目录</summary>
 	<nav class="ms-4 lg:w-full">
 		<ol class="mt-4">

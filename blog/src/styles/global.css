@@ -153,3 +153,16 @@
 .post-prose p {
  margin-block: 16px;
 }
+
+.article-content {
+ position: relative;
+}
+@media (min-width: 1280px) {
+ .article-content > .post-toc {
+  position: absolute;
+  inset-inline-start: calc(100% + 32px);
+  top: 0;
+  width: 220px;
+  margin-bottom: 0;
+ }
+}
