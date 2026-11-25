@@ -1,6 +1,9 @@
 ---
-import Base from '../layouts/Base.astro';
-import { posts } from '../posts.js';
-const months = [...new Set(posts.map(post => post.frontmatter.date.slice(0, 7)))];
+import PageLayout from "@/layouts/Base.astro";
+import { getAllPosts } from "@/data/post";
+import { collectionDateSort } from "@/utils/date";
+const posts = (await getAllPosts()).sort(collectionDateSort);
+const monthKey = (date: Date) => `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
+const months = [...new Set(posts.map(post => monthKey(post.data.publishDate)))];
 ---
-<Base title="归档"><h1>归档</h1>{months.map(month => <section><h2>{month.slice(0,4)} 年 {Number(month.slice(5))} 月</h2><ul>{posts.filter(post => post.frontmatter.date.startsWith(month)).map(post => <li><a href={post.url}>{post.frontmatter.title}</a></li>)}</ul></section>)}</Base>
+<PageLayout meta={{ title: "归档" }}><h1 class="title mb-12">归档</h1>{months.map(month => <section class="mb-10"><h2 class="title mb-5 text-lg">{month.slice(0,4)} 年 {Number(month.slice(5))} 月</h2><ul class="space-y-4">{posts.filter(post => monthKey(post.data.publishDate) === month).map(post => <li><a class="cactus-link" href={`/posts/${post.id}/`}>{post.data.title}</a></li>)}</ul></section>)}</PageLayout>

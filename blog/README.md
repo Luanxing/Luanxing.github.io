@@ -1,35 +1,34 @@
-# 一方乱行
+# 一方乱行 · Cactus
 
-Astro 源码位于仓库的 `blog` 目录。GitHub Pages 地址为 https://luanxing.github.io/ 。
+使用 Astro Cactus 主题，发布到 https://luanxing.github.io/ 。主题许可见 LICENSE。
 
-## 网页编辑文章
+## 网页写文章
 
-在 GitHub 打开 `blog/src/pages/posts`，用 Add file → Create new file 创建 `文章英文名.md`。
+在 GitHub 的 `blog/content/posts` 下创建 `文章英文名.md`：
 
 ```markdown
 ---
-layout: ../../layouts/Post.astro
-title: 文章标题
-date: '2026-11-25'
-description: 一句话简介
-cover: /images/tateyama/cover.jpg
-coverAlt: 立山雪景
+title: 立山开板（一）
+publishDate: '2026-11-25'
+description: 从第一次想去立山，到真正准备出发。
+tags: ['滑雪', '旅行']
+ogImage: /icon.svg
 ---
 
-这里开始写正文。
+正文从这里开始。
 
-![上山时的照片](/images/tateyama/01.jpg)
+![立山雪景](/images/tateyama/01.jpg)
 ```
 
-不配封面时省略 `cover` 和 `coverAlt`。照片在 `blog/public/images` 下使用 Add file → Upload files 上传，可按游记创建子目录。照片和 Markdown 都会公开。图片建议缩小到长边 1600–2000 像素并保留原图。
+照片上传到 `blog/public/images`，正文用 `/images/文件名.jpg` 引用。封面可和文章放在同一个文件夹，文件夹内正文命名为 `index.md`，在 frontmatter 添加：
 
-归档按 `date` 的月份自动整理，RSS 自动更新。`date` 请用带引号的 YYYY-MM-DD。
+```yaml
+coverImage:
+  src: ./cover.jpg
+  alt: 立山的雪景
+```
 
-## 发布
-
-仓库 Settings → Pages → Build and deployment → Source 选择 GitHub Actions。
-
-`astro-blog` 分支和 PR 会构建检查。合并到 `master` 后自动发布。Actions 失败时先查看日志，构建成功的运行提供 `github-pages` 网页压缩包。
+`draft: true` 可保留草稿，生产站不会生成该文。提交到 master 后自动发布，归档与搜索会自动更新。
 
 ## Codespaces 预览
 
@@ -39,4 +38,4 @@ npm ci
 npm run dev -- --host 0.0.0.0
 ```
 
-在 Ports 中打开 4321 端口，保持私有可见性。修改保存后预览自动更新。
+在 Ports 打开 4321。端口保持私有。搜索索引在正式构建后生成。

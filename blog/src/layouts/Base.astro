@@ -1,33 +1,54 @@
 ---
-const { title = '一方乱行', description = 'Otto 的旅行、户外与生活记录。' } = Astro.props;
-const links = [['/', '首页'], ['/posts/', '文章'], ['/archive/', '归档'], ['/about/', '关于'], ['/feed.xml', 'RSS']];
+import BaseHead from "@/components/BaseHead.astro";
+import Footer from "@/components/layout/Footer.astro";
+import Header from "@/components/layout/Header.astro";
+import SkipLink from "@/components/SkipLink.astro";
+import ThemeProvider from "@/components/ThemeProvider.astro";
+import { siteConfig } from "@/site.config";
+import type { SiteMeta } from "@/types";
+
+interface Props {
+	meta: SiteMeta;
+}
+
+const {
+	meta: { articleDate, description = siteConfig.description, ogImage, title },
+} = Astro.props;
 ---
-<!doctype html>
-<html lang="zh-CN">
-<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width" /><title>{title === '一方乱行' ? title : `${title} · 一方乱行`}</title><meta name="description" content={description} /><link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} /><link rel="alternate" type="application/rss+xml" title="一方乱行" href="/feed.xml" /></head>
-<body>
-<header><a class="brand" href="/">一方乱行</a><nav aria-label="主导航">{links.map(([href, label]) => <a href={href} aria-current={Astro.url.pathname === href ? 'page' : undefined}>{label}</a>)}</nav></header>
-<main><slot /></main>
-<footer>Otto · 一方乱行</footer>
-</body></html>
-<style is:global>
-:root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; color: #202020; background: #fff; }
-* { box-sizing: border-box; }
-body { max-width: 920px; margin: auto; padding: 56px 28px 24px; font-size: 17px; line-height: 1.9; }
-header { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding-bottom: 26px; border-bottom: 2px solid; }
-a { color: inherit; text-underline-offset: 5px; }
-.brand { font-size: 30px; font-weight: 800; letter-spacing: .08em; text-decoration: none; white-space: nowrap; }
-nav { display: flex; flex-wrap: wrap; gap: 20px; font-size: 15px; }
-nav a { text-decoration: none; } nav a:hover, nav a[aria-current] { text-decoration: underline; }
-main { padding: 42px 0 56px; min-height: 240px; }
-h1 { font-size: clamp(26px, 4vw, 36px); line-height: 1.5; margin: 0 0 18px; } h2 { font-size: 23px; margin-top: 38px; }
-p { margin: 0 0 24px; } .muted, time { color: #777; font-size: 14px; }
-.post-list { list-style: none; padding: 0; margin: 36px 0 0; }
-.post-list li { border-bottom: 1px solid #e7e7e7; padding: 24px 0; }
-.post-list h2 { margin: 8px 0; font-size: 23px; } .post-list h2 a { text-decoration: none; } .post-list h2 a:hover { text-decoration: underline; }
-.post-list p { color: #666; margin: 0; } .cover { display: block; width: 100%; max-height: 420px; object-fit: cover; margin-bottom: 18px; }
-article { max-width: 720px; margin: auto; overflow-wrap: anywhere; } article .meta { margin-bottom: 36px; }
-img { max-width: 100%; height: auto; } blockquote { border-left: 3px solid #ddd; margin-left: 0; padding-left: 20px; color: #666; }
-pre { overflow-x: auto; padding: 16px; background: #f6f6f6; } footer { border-top: 2px solid; padding-top: 24px; text-align: center; font-size: 14px; color: #777; }
-@media (max-width: 600px) { body { padding: 28px 20px 20px; } header { align-items: flex-start; flex-direction: column; gap: 16px; } nav { gap: 18px; } main { padding-top: 30px; } }
-</style>
+
+<html class="scroll-smooth" lang={siteConfig.lang}>
+	<head>
+		<BaseHead articleDate={articleDate} description={description} ogImage={ogImage} title={title} />
+		<ThemeProvider />
+	</head>
+	<body
+		class="bg-global-bg text-global-text mx-auto flex min-h-screen max-w-3xl flex-col px-4 pt-16 font-mono text-sm font-normal antialiased sm:px-8"
+	>
+		<SkipLink />
+		<Header />
+		<main id="main">
+			<slot />
+		</main>
+		<Footer />
+		<script is:inline type="speculationrules">
+			{
+				"prefetch": [
+					{
+						"where": {
+							"href_matches": "/*"
+						},
+						"eagerness": "immediate"
+					}
+				],
+				"prerender": [
+					{
+						"where": {
+							"href_matches": "/*"
+						},
+						"eagerness": "moderate"
+					}
+				]
+			}
+		</script>
+	</body>
+</html>
