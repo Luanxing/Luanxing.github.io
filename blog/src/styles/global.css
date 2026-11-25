@@ -142,3 +142,13 @@
 
 .prose { font-size: 1rem; line-height: 1.95; }
 .prose img { height: auto; max-width: 100%; }
+
+.post-prose {
+ width: 100%;
+ max-width: none;
+ font-size: 1rem;
+ line-height: 1.9;
+}
+@media (min-width: 640px) {
+ .post-prose { font-size: 1.125rem; }
+}
