@@ -146,9 +146,10 @@
 .post-prose {
  width: 100%;
  max-width: none;
- font-size: 1rem;
- line-height: 1.9;
+ font-family: Verdana, sans-serif;
+ font-size: 16px;
+ line-height: 1.6;
 }
-@media (min-width: 640px) {
- .post-prose { font-size: 1.125rem; }
+.post-prose p {
+ margin-block: 16px;
 }
