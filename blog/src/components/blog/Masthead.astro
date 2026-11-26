@@ -5,7 +5,7 @@ import FormattedDate from "@/components/FormattedDate.astro";
 import { siteConfig } from "@/site.config";
 
 interface Props {
-	content: CollectionEntry<"post">;
+	content: CollectionEntry<"post"> | CollectionEntry<"postJa">;
 	readingTime: string;
 }
 

@@ -12,13 +12,13 @@ interface Props {
 }
 
 const {
-	meta: { articleDate, modifiedDate, noindex, description = siteConfig.description, ogImage, title },
+	meta: { lang = siteConfig.lang, alternates = [], articleDate, modifiedDate, noindex, description = siteConfig.description, ogImage, title },
 } = Astro.props;
 ---
 
-<html class="scroll-smooth" lang={siteConfig.lang}>
+<html class="scroll-smooth" lang={lang}>
 	<head>
-		<BaseHead articleDate={articleDate} modifiedDate={modifiedDate} noindex={noindex} description={description} ogImage={ogImage} title={title} />
+		<BaseHead lang={lang} alternates={alternates} articleDate={articleDate} modifiedDate={modifiedDate} noindex={noindex} description={description} ogImage={ogImage} title={title} />
 		<ThemeProvider />
 	</head>
 	<body

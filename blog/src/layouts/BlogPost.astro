@@ -1,5 +1,5 @@
 ---
-import { type CollectionEntry, render } from "astro:content";
+import { type CollectionEntry, getCollection, render } from "astro:content";
 import { getImage } from "astro:assets";
 
 import Masthead from "@/components/blog/Masthead.astro";
@@ -10,20 +10,29 @@ import WebMentions from "@/components/blog/webmentions/index.astro";
 import BaseLayout from "./Base.astro";
 
 interface Props {
-	post: CollectionEntry<"post">;
+	post: CollectionEntry<"post"> | CollectionEntry<"postJa">;
 }
 
 const { post } = Astro.props;
+const isJa = post.collection === "postJa";
+const lang = isJa ? "ja" : "zh-CN";
+const originalId = isJa ? post.data.translationOf : post.id;
+const originalPath = `/posts/${originalId}/`;
+const translation = (await getCollection("postJa")).find(entry => entry.data.translationOf === originalId && !entry.data.draft);
+const japanesePath = translation ? `/ja/posts/${translation.id}/` : undefined;
+const alternates = japanesePath ? [{lang: "zh-CN", href: originalPath}, {lang: "ja", href: japanesePath}, {lang: "x-default", href: originalPath}] : [];
+
 const { ogImage, coverImage, title, description, updatedDate, publishDate } = post.data;
 const cover = coverImage ? await getImage({ src: coverImage.src, width: 1200, format: "jpeg" }) : undefined;
 const socialImage = cover?.src ?? (ogImage === "/icon.svg" ? undefined : ogImage ?? `/og-image/${post.id}.png`);
 const articleDate = publishDate.toISOString();
 const { headings, remarkPluginFrontmatter } = await render(post);
-const readingTime: string = remarkPluginFrontmatter.readingTime;
+const readingTime: string = isJa ? remarkPluginFrontmatter.readingTime.replace("约 ", "約").replace(" 分钟", "分") : remarkPluginFrontmatter.readingTime;
 ---
 
 <BaseLayout
 	meta={{
+        lang, alternates,
 		articleDate,
 		modifiedDate: updatedDate?.toISOString(),
 		description,
@@ -33,7 +42,9 @@ const readingTime: string = remarkPluginFrontmatter.readingTime;
 >
 	<article class="grow break-words" data-pagefind-body>
 		<div id="blog-hero" class="mb-12"><Masthead content={post} readingTime={readingTime} /></div>
-		<div class="article-content">
+		{japanesePath && <nav class="mb-6 flex gap-4" aria-label={isJa ? "言語切り替え" : "文章语言"}><a href={originalPath} lang="zh-CN" aria-current={!isJa ? "page" : undefined}>中文</a><a href={japanesePath} lang="ja" aria-current={isJa ? "page" : undefined}>日本語</a></nav>}
+        {isJa && <p class="mb-6 text-sm">中国語の原文を AI のサポートで日本語に翻訳しました。<a class="underline" href={originalPath}>中国語の原文を読む</a></p>}
+        <div class="article-content">
 			{!!headings.length && <TOC headings={headings} />}
 			<div
 				class="post-prose prose prose-sm max-w-none prose-headings:font-semibold prose-headings:text-accent-2 prose-headings:before:absolute prose-headings:before:-ms-4 prose-headings:before:text-muted prose-headings:hover:before:text-accent sm:prose-headings:before:content-['#'] sm:prose-th:before:content-none"
@@ -42,14 +53,14 @@ const readingTime: string = remarkPluginFrontmatter.readingTime;
 				<WebMentions />
 			</div>
 		</div>
-		<Comments />
+		<Comments path={originalPath.replace(/\/$/, "")} lang={lang} />
 	</article>
 	<button
 		class="hover:border-link fixed end-4 bottom-8 z-90 flex h-10 w-10 translate-y-28 cursor-pointer items-center justify-center rounded-full border-2 border-transparent bg-zinc-200 text-3xl opacity-0 transition-all transition-discrete duration-300 data-[show=true]:translate-y-0 data-[show=true]:opacity-100 sm:end-8 sm:h-12 sm:w-12 dark:bg-zinc-700"
 		data-show="false"
 		id="to-top-btn"
 	>
-		<span class="sr-only">回到顶部</span>
+		<span class="sr-only">{isJa ? "ページ上部へ" : "回到顶部"}</span>
 		<svg
 			aria-hidden="true"
 			class="h-6 w-6"

@@ -6,7 +6,7 @@ import "@/styles/global.css";
 
 type Props = SiteMeta;
 
-const { articleDate, modifiedDate, noindex = false, description = siteConfig.description, ogImage, title } = Astro.props;
+const { lang = siteConfig.lang, alternates = [], articleDate, modifiedDate, noindex = false, description = siteConfig.description, ogImage, title } = Astro.props;
 
 const titleSeparator = "•";
 const siteTitle = Astro.url.pathname === "/" ? `${siteConfig.title} · Otto 的旅行与生活记录` : `${title} ${titleSeparator} ${siteConfig.title}`;
@@ -23,7 +23,7 @@ const page = {
  url: canonicalURL.href,
  ...(articleDate ? { headline: title, datePublished: articleDate, ...(modifiedDate ? { dateModified: modifiedDate } : {}), author: { "@id": authorId }, mainEntityOfPage: canonicalURL.href } : { name: siteTitle }),
  description,
- inLanguage: siteConfig.lang,
+ inLanguage: lang,
  isPartOf: { "@id": websiteId },
  ...(socialImageURL ? { image: [socialImageURL] } : {}),
  ...(Astro.url.pathname === "/about/" ? { mainEntity: { "@id": authorId } } : {}),
@@ -51,6 +51,7 @@ const structuredData = JSON.stringify({ "@context": "https://schema.org", "@grap
 
 {/* Canonical URL */}
 <link href={canonicalURL} rel="canonical" />
+{alternates.map(item => <link rel="alternate" hreflang={item.lang} href={new URL(item.href, Astro.site)} />)}
 
 {/* Primary Meta Tags */}
 <meta content={siteTitle} name="title" />
@@ -65,7 +66,7 @@ const structuredData = JSON.stringify({ "@context": "https://schema.org", "@grap
 <meta content={description} property="og:description" />
 <meta content={canonicalURL} property="og:url" />
 <meta content={siteConfig.title} property="og:site_name" />
-<meta content={siteConfig.ogLocale} property="og:locale" />
+<meta content={lang === "ja" ? "ja_JP" : siteConfig.ogLocale} property="og:locale" />
 {socialImageURL && <meta content={socialImageURL} property="og:image" />}
 {
 	articleDate && (

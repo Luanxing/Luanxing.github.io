@@ -18,6 +18,8 @@ export interface PaginationLink {
 }
 
 export interface SiteMeta {
+ lang?: string;
+ alternates?: { lang: string; href: string }[];
 	articleDate?: string | undefined;
 	modifiedDate?: string | undefined;
 	noindex?: boolean | undefined;

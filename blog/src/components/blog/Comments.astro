@@ -1,5 +1,8 @@
 ---
 import comments from "@/config/comments.json";
+interface Props { path?: string; lang?: string; }
+const { path, lang = "zh-CN" } = Astro.props;
+const isJa = lang === "ja";
 const serverURL = comments.serverURL.trim();
 if (serverURL && !serverURL.startsWith("https://")) {
   throw new Error("Waline serverURL must use HTTPS");
@@ -7,11 +10,11 @@ if (serverURL && !serverURL.startsWith("https://")) {
 ---
 {serverURL && (
   <section class="comments mt-12 border-t border-dashed pt-8" aria-labelledby="comments-title" data-pagefind-ignore>
-    <h2 id="comments-title" class="mb-4 text-xl font-semibold">留言</h2>
-    <p class="mb-4 text-sm">欢迎聊聊你的想法，填个昵称就能留言。邮箱选填，不会公开展示。</p>
-    <button id="load-comments" class="cursor-pointer rounded border px-4 py-2" type="button">查看或写留言</button>
+    <h2 id="comments-title" class="mb-4 text-xl font-semibold">{isJa ? "コメント" : "留言"}</h2>
+    <p class="mb-4 text-sm">{isJa ? "気軽にコメントしてください。ニックネームのみ必須で、メールアドレスは任意・非公開です。" : "欢迎聊聊你的想法，填个昵称就能留言。邮箱选填，不会公开展示。"}</p>
+    <button id="load-comments" class="cursor-pointer rounded border px-4 py-2" type="button">{isJa ? "コメントを読む・書く" : "查看或写留言"}</button>
     <p id="comments-status" role="status" class="mt-3 text-sm"></p>
-    <div id="waline" data-server-url={serverURL}></div>
+    <div id="waline" data-server-url={serverURL} data-comment-path={path} data-lang={lang}></div>
     <noscript>请启用 JavaScript 后查看和发送留言。</noscript>
   </section>
 )}
@@ -21,7 +24,8 @@ if (serverURL && !serverURL.startsWith("https://")) {
     const container = document.getElementById('waline');
     const status = document.getElementById('comments-status');
     button.disabled = true;
-    status.textContent = '正在加载评论…';
+    const isJa = container.dataset.lang === 'ja';
+    status.textContent = isJa ? 'コメントを読み込み中…' : '正在加载评论…';
     try {
       if (!document.getElementById('waline-css')) {
         const css = document.createElement('link');
@@ -34,8 +38,8 @@ if (serverURL && !serverURL.startsWith("https://")) {
       init({
         el: container,
         serverURL: container.dataset.serverUrl,
-        path: window.location.pathname.replace(/\/$/, ''),
-        lang: 'zh-CN',
+        path: container.dataset.commentPath || window.location.pathname.replace(/\/$/, ''),
+        lang: isJa ? 'jp' : 'zh-CN',
         dark: 'html[data-theme="dark"]',
         login: 'enable',
         meta: ['nick', 'mail', 'link'],
@@ -45,12 +49,12 @@ if (serverURL && !serverURL.startsWith("https://")) {
         search: false,
         imageUploader: false,
         wordLimit: 2000,
-        locale: { placeholder: '这篇文章让你想到了什么？欢迎留言。' },
+        locale: { placeholder: isJa ? '記事を読んで思ったことなど、気軽にどうぞ。' : '这篇文章让你想到了什么？欢迎留言。' },
       });
       button.hidden = true;
       status.textContent = '';
     } catch {
-      status.textContent = '评论暂时无法加载，请稍后重试。';
+      status.textContent = isJa ? 'コメントを読み込めませんでした。しばらくしてから再度お試しください。' : '评论暂时无法加载，请稍后重试。';
       button.disabled = false;
     }
   });
