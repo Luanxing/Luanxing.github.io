@@ -4,6 +4,7 @@ import { getImage } from "astro:assets";
 
 import Masthead from "@/components/blog/Masthead.astro";
 import Comments from "@/components/blog/Comments.astro";
+import FuriganaToggle from "@/components/blog/FuriganaToggle.astro";
 import TOC from "@/components/blog/TOC.astro";
 import WebMentions from "@/components/blog/webmentions/index.astro";
 
@@ -44,9 +45,11 @@ const readingTime: string = isJa ? remarkPluginFrontmatter.readingTime.replace("
 		<div id="blog-hero" class="mb-12"><Masthead content={post} readingTime={readingTime} /></div>
 		{japanesePath && <nav class="mb-6 flex gap-4" aria-label={isJa ? "言語切り替え" : "文章语言"}><a href={originalPath} lang="zh-CN" aria-current={!isJa ? "page" : undefined}>中文</a><a href={japanesePath} lang="ja" aria-current={isJa ? "page" : undefined}>日本語</a></nav>}
         {isJa && <p class="mb-6 text-sm">中国語の原文を AI のサポートで日本語に翻訳しました。<a class="underline" href={originalPath}>中国語の原文を読む</a></p>}
+        {isJa && post.id === "hello-blog" && <FuriganaToggle />}
         <div class="article-content">
 			{!!headings.length && <TOC headings={headings} />}
 			<div
+                id={isJa ? "japanese-prose" : undefined}
 				class="post-prose prose prose-sm max-w-none prose-headings:font-semibold prose-headings:text-accent-2 prose-headings:before:absolute prose-headings:before:-ms-4 prose-headings:before:text-muted prose-headings:hover:before:text-accent sm:prose-headings:before:content-['#'] sm:prose-th:before:content-none"
 			>
 				<slot />

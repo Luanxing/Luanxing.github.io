@@ -1,0 +1,29 @@
+<div class="mb-6" data-pagefind-ignore>
+  <button id="furigana-toggle" type="button" aria-pressed="true" aria-controls="japanese-prose" class="cursor-pointer rounded border px-3 py-2 text-sm">ふりがな：表示中（隐藏注音）</button>
+</div>
+<script>
+  const button = document.querySelector<HTMLButtonElement>('#furigana-toggle');
+  const prose = document.getElementById('japanese-prose');
+  if (button && prose) {
+    let enabled = true;
+    try { enabled = localStorage.getItem('furigana-visible') !== 'false'; } catch {}
+    const update = () => {
+      prose.classList.toggle('furigana-hidden', !enabled);
+      button.setAttribute('aria-pressed', String(enabled));
+      button.textContent = enabled ? 'ふりがな：表示中（隐藏注音）' : 'ふりがな：非表示（显示注音）';
+    };
+    update();
+    button.addEventListener('click', () => {
+      enabled = !enabled;
+      update();
+      try { localStorage.setItem('furigana-visible', String(enabled)); } catch {}
+    });
+  }
+</script>
+<style is:global>
+  #japanese-prose ruby { ruby-position: over; ruby-align: center; }
+  #japanese-prose rt { font-size: .6em; font-weight: normal; line-height: 1; }
+  #japanese-prose.furigana-hidden rt,
+  #japanese-prose.furigana-hidden rp { display: none; }
+  #japanese-prose.furigana-hidden ruby { display: inline; }
+</style>
