@@ -1,0 +1,61 @@
+---
+import comments from "@/config/comments.json";
+const serverURL = comments.serverURL.trim();
+if (serverURL && !serverURL.startsWith("https://")) {
+  throw new Error("Waline serverURL must use HTTPS");
+}
+---
+{serverURL && (
+  <section class="comments mt-12 border-t border-dashed pt-8" aria-labelledby="comments-title" data-pagefind-ignore>
+    <h2 id="comments-title" class="mb-4 text-xl font-semibold">留言</h2>
+    <p class="mb-4 text-sm">欢迎聊聊你的想法，填个昵称就能留言。邮箱选填，不会公开展示。</p>
+    <button id="load-comments" class="cursor-pointer rounded border px-4 py-2" type="button">查看或写留言</button>
+    <p id="comments-status" role="status" class="mt-3 text-sm"></p>
+    <div id="waline" data-server-url={serverURL}></div>
+    <noscript>请启用 JavaScript 后查看和发送留言。</noscript>
+  </section>
+)}
+<script is:inline type="module">
+  const button = document.getElementById('load-comments');
+  button?.addEventListener('click', async () => {
+    const container = document.getElementById('waline');
+    const status = document.getElementById('comments-status');
+    button.disabled = true;
+    status.textContent = '正在加载评论…';
+    try {
+      if (!document.getElementById('waline-css')) {
+        const css = document.createElement('link');
+        css.id = 'waline-css';
+        css.rel = 'stylesheet';
+        css.href = 'https://unpkg.com/@waline/client@v3/dist/waline.css';
+        document.head.append(css);
+      }
+      const { init } = await import('https://unpkg.com/@waline/client@v3/dist/waline.js');
+      init({
+        el: container,
+        serverURL: container.dataset.serverUrl,
+        path: window.location.pathname.replace(/\/$/, ''),
+        lang: 'zh-CN',
+        dark: 'html[data-theme="dark"]',
+        login: 'enable',
+        meta: ['nick', 'mail', 'link'],
+        requiredMeta: ['nick'],
+        pageview: false,
+        comment: false,
+        search: false,
+        imageUploader: false,
+        wordLimit: 2000,
+        locale: { placeholder: '这篇文章让你想到了什么？欢迎留言。' },
+      });
+      button.hidden = true;
+      status.textContent = '';
+    } catch {
+      status.textContent = '评论暂时无法加载，请稍后重试。';
+      button.disabled = false;
+    }
+  });
+</script>
+<style>
+  .comments { font-family: Verdana, sans-serif; line-height: 1.6; }
+  #waline { --waline-font-size: 16px; --waline-theme-color: var(--color-accent); --waline-text-color: var(--color-global-text); }
+</style>

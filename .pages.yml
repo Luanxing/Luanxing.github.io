@@ -60,3 +60,14 @@ content:
           switcher: true
           rename: random
           extensions: [jpg, jpeg, png, webp, gif, avif]
+
+  - name: comments
+    label: 评论设置
+    type: file
+    path: blog/src/config/comments.json
+    format: json
+    fields:
+      - name: serverURL
+        label: Waline 服务地址
+        type: string
+        description: 部署并注册管理员后，填入 HTTPS 服务根地址；留空则隐藏评论区。不要填写 /ui 或数据库连接串。
