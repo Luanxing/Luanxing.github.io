@@ -5,7 +5,8 @@ import PageLayout from "@/layouts/Base.astro";
 import { collectionDateSort } from "@/utils/date";
 const posts = (await getAllPosts()).sort(collectionDateSort).slice(0, 10);
 ---
-<PageLayout meta={{ title: "首页" }}>
+<PageLayout meta={{ title: "首页", alternates: [{lang: "zh-CN", href: "/"}, {lang: "ja", href: "/ja/"}, {lang: "x-default", href: "/"}] }}>
+ <nav aria-label="首页语言" class="mb-8 flex gap-4"><a href="/" lang="zh-CN" aria-current="page" class="font-semibold underline underline-offset-4">中文</a><a href="/ja/" lang="ja" class="cactus-link">日本語</a></nav>
  <section><h1 class="title mb-6">一方乱行</h1><p class="mb-4 leading-8">我是 Otto，在日本生活，有空就往山里跑。</p><p class="leading-8">这里记一些走过的路，还有生活里的片段。</p></section>
  <section class="mt-16"><h2 class="title text-accent mb-6 text-xl"><a href="/posts/">最近文章</a></h2><ul class="space-y-4" role="list">{posts.map(post => <li class="grid gap-1 sm:grid-cols-[auto_1fr]"><PostPreview post={post} /></li>)}</ul></section>
 </PageLayout>

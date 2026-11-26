@@ -13,7 +13,7 @@ import { siteConfig } from "../../site.config";
 		<a
 			aria-current={Astro.url.pathname === "/" ? "page" : false}
 			class="inline-flex items-center sm:relative sm:inline-block sm:grayscale sm:hover:filter-none"
-			href="/"
+			href={Astro.url.pathname.startsWith("/ja/") ? "/ja/" : "/"}
 		>
 			{
 				siteConfig.showLogo && (
@@ -52,7 +52,7 @@ import { siteConfig } from "../../site.config";
 					<a
 						aria-current={Astro.url.pathname === link.path ? "page" : false}
 						class="text-accent px-2 py-4 font-semibold sm:px-4 sm:py-0 sm:underline-offset-2 sm:hover:underline"
-						href={link.path}
+						href={Astro.url.pathname.startsWith("/ja/") && link.path === "/" ? "/ja/" : Astro.url.pathname.startsWith("/ja/") && link.path === "/posts/" ? "/ja/#articles" : link.path}
 					>
 						{Astro.url.pathname.startsWith("/ja/") ? ({"首页":"ホーム", "文章":"記事", "归档":"アーカイブ", "关于":"このブログについて"}[link.title] ?? link.title) : link.title}
 					</a>

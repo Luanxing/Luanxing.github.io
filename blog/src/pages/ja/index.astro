@@ -1,0 +1,15 @@
+---
+import { getCollection } from "astro:content";
+import PageLayout from "@/layouts/Base.astro";
+import { getAllPosts } from "@/data/post";
+const originals = await getAllPosts();
+const posts = (await getCollection("postJa", ({data}) => !data.draft))
+  .filter(post => originals.some(original => original.id === post.data.translationOf))
+  .sort((a,b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+const date = new Intl.DateTimeFormat("ja-JP", {year: "numeric", month: "2-digit", day: "2-digit"});
+---
+<PageLayout meta={{ title: "ホーム", lang: "ja", description: "Otto の日本での暮らしと、旅や山で過ごした時間の記録。", alternates: [{lang: "zh-CN", href: "/"}, {lang: "ja", href: "/ja/"}, {lang: "x-default", href: "/"}] }}>
+ <nav aria-label="言語切り替え" class="mb-8 flex gap-4"><a href="/" lang="zh-CN" class="cactus-link">中文</a><a href="/ja/" lang="ja" aria-current="page" class="font-semibold underline underline-offset-4">日本語</a></nav>
+ <section><h1 class="title mb-6">一方乱行</h1><p class="mb-4 leading-8">Otto です。日本で暮らしながら、時間があれば山へ出かけています。</p><p class="leading-8">旅先でのことや、日々の暮らしのひとこまを、少しずつ残していきます。</p></section>
+ <section id="articles" class="mt-16"><h2 class="title text-accent mb-6 text-xl">日本語の記事</h2><p class="mb-6 leading-7">中国語で書いた記事を、AI のサポートで日本語に翻訳しています。各記事で中国語の原文に切り替えられます。</p><ul class="space-y-5" role="list">{posts.map(post => <li class="grid gap-1 sm:grid-cols-[auto_1fr]"><time class="text-muted min-w-30 font-semibold" datetime={post.data.publishDate.toISOString()}>{date.format(post.data.publishDate)}</time><a class="cactus-link" href={`/ja/posts/${post.id}/`}>{post.data.title}</a></li>)}</ul></section>
+</PageLayout>
