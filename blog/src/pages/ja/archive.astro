@@ -1,0 +1,16 @@
+---
+import { getCollection } from "astro:content";
+import PageLayout from "@/layouts/Base.astro";
+import { getAllPosts } from "@/data/post";
+const originals = await getAllPosts();
+const posts = (await getCollection("postJa", ({data}) => !data.draft))
+  .filter(post => originals.some(original => original.id === post.data.translationOf))
+  .sort((a,b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+const monthKey = (date: Date) => `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
+const months = [...new Set(posts.map(post => monthKey(post.data.publishDate)))];
+---
+<PageLayout meta={{ title: "アーカイブ", lang: "ja", description: "「一方乱行」の日本語記事を年月ごとにまとめたアーカイブ。", alternates: [{lang: "zh-CN", href: "/archive/"}, {lang: "ja", href: "/ja/archive/"}, {lang: "x-default", href: "/archive/"}] }}>
+ <nav aria-label="言語切り替え" class="mb-8 flex gap-4"><a class="cactus-link" href="/archive/" lang="zh-CN">中文</a><a class="font-semibold underline underline-offset-4" href="/ja/archive/" lang="ja" aria-current="page">日本語</a></nav>
+ <h1 class="title mb-6">アーカイブ</h1><p class="mb-10 leading-7">日本語に翻訳した記事を、年月ごとにまとめています。</p>
+ {months.map(month => <section class="mb-10"><h2 class="title mb-5 text-lg">{month.slice(0,4)}年{Number(month.slice(5))}月</h2><ul class="space-y-4">{posts.filter(post => monthKey(post.data.publishDate) === month).map(post => <li><a class="cactus-link" href={`/ja/posts/${post.id}/`}>{post.data.title}</a></li>)}</ul></section>)}
+</PageLayout>

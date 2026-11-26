@@ -18,7 +18,7 @@ const websiteId = new URL("/#website", Astro.site).href;
 const person = { "@type": "Person", "@id": authorId, name: siteConfig.author, alternateName: "一方乱行", url: authorURL };
 const website = { "@type": "WebSite", "@id": websiteId, name: siteConfig.title, alternateName: "一方乱行的博客", url: Astro.site!.href, description: siteConfig.description, inLanguage: siteConfig.lang, author: { "@id": authorId } };
 const page = {
- "@type": articleDate ? "BlogPosting" : Astro.url.pathname === "/about/" ? "AboutPage" : "WebPage",
+ "@type": articleDate ? "BlogPosting" : Astro.url.pathname.endsWith("/about/") ? "AboutPage" : "WebPage",
  "@id": `${canonicalURL.href}#${articleDate ? "article" : "page"}`,
  url: canonicalURL.href,
  ...(articleDate ? { headline: title, datePublished: articleDate, ...(modifiedDate ? { dateModified: modifiedDate } : {}), author: { "@id": authorId }, mainEntityOfPage: canonicalURL.href } : { name: siteTitle }),
@@ -26,7 +26,7 @@ const page = {
  inLanguage: lang,
  isPartOf: { "@id": websiteId },
  ...(socialImageURL ? { image: [socialImageURL] } : {}),
- ...(Astro.url.pathname === "/about/" ? { mainEntity: { "@id": authorId } } : {}),
+ ...(Astro.url.pathname.endsWith("/about/") ? { mainEntity: { "@id": authorId } } : {}),
 };
 const structuredData = JSON.stringify({ "@context": "https://schema.org", "@graph": [website, person, page] }).replaceAll("<", "\\u003c");
 ---

@@ -35,7 +35,7 @@ const {
 </h1>
 <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
 	<p class="font-semibold">
-		<a class="cactus-link" rel="author" href="/about/">{siteConfig.author}</a> / <FormattedDate date={data.publishDate} /> /{" "}
+		<a class="cactus-link" rel="author" href={Astro.url.pathname.startsWith("/ja/") ? "/ja/about/" : "/about/"}>{siteConfig.author}</a> / <FormattedDate date={data.publishDate} /> /{" "}
 		{readingTime}
 	</p>
 	{

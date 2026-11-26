@@ -1,4 +1,5 @@
 ---
+import { menuPath, menuTitle } from "@/utils/i18n";
 import Search from "@/components/Search.astro";
 import ThemeToggle from "@/components/ThemeToggle.astro";
 import { menuLinks } from "@/site.config";
@@ -50,11 +51,11 @@ import { siteConfig } from "../../site.config";
 			{
 				menuLinks.map((link) => (
 					<a
-						aria-current={Astro.url.pathname === link.path ? "page" : false}
+						aria-current={Astro.url.pathname === menuPath(link.path, Astro.url.pathname) ? "page" : false}
 						class="text-accent px-2 py-4 font-semibold sm:px-4 sm:py-0 sm:underline-offset-2 sm:hover:underline"
-						href={Astro.url.pathname.startsWith("/ja/") && link.path === "/" ? "/ja/" : Astro.url.pathname.startsWith("/ja/") && link.path === "/posts/" ? "/ja/#articles" : link.path}
+						href={menuPath(link.path, Astro.url.pathname)}
 					>
-						{Astro.url.pathname.startsWith("/ja/") ? ({"首页":"ホーム", "文章":"記事", "归档":"アーカイブ", "关于":"このブログについて"}[link.title] ?? link.title) : link.title}
+						{menuTitle(link.title, Astro.url.pathname)}
 					</a>
 				))
 			}
